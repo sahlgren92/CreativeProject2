@@ -1,0 +1,92 @@
+<html>
+<head>
+<style>
+body {
+	background-color: black;
+}
+
+p {
+	bottom: 0;
+	text-align: center;
+	font-family: verdana;
+	font-size: 24px;
+	color: red;
+	
+}
+
+.randVid {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+#randomVideo {
+	display: none;
+}
+
+.button {
+	width: 160px;
+	height: 160px;
+	font-size: 36px;
+	font-family: verdana;
+	position: fixed;
+	margin: auto;
+	color: #373F4C;
+	background-color: red;
+	border-radius: 50%;
+	border: 2px solid red;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+</style>
+<title>Youtube Roulette</title>
+<script
+  src="http://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous">
+</script>
+<script>
+$(document).ready(function() {
+$("#rouletteButton").click(function(e){
+  e.preventDefault();
+  $.ajax({
+    url : "https://www.googleapis.com/youtube/v3/playlistItems",
+    type : "get",
+    dataType : "json",
+    data : {
+      playlistId : "PL04-746QZ59mtAAFjbuQDH78IUIyW7EbK",
+      part : "snippet",
+      maxResults : 50,
+      key : "AIzaSyC0qmndn9ULr4LIxCyNX6KxEspS4uTtxkY",
+    },
+    success : function(data) {
+      console.log(data);
+      var videoIds = [];
+      for (var i = 0; i < data.items.length; i++) {
+        videoIds.push(data.items[i].snippet.resourceId.videoId);
+      }
+      console.log(videoIds);
+      var vidUrl = "https://www.youtube.com/embed/" + videoIds[Math.floor(Math.random()*videoIds.length)];
+      vidUrl += "?autoplay=1";
+      console.log(vidUrl);
+      $("#rouletteButton").hide();
+      $("#paraText").hide();
+      $("#randomVideo")[0].src = vidUrl;
+      $("#randomVideo").show();
+    }
+  });
+});
+});
+</script>
+</head>
+<body>
+<button class="button" id="rouletteButton"></button>
+<p id="paraText">
+Click the Button. Do it!
+</p>
+<iframe class="randVid" id="randomVideo" src="" frameborder="0" allowfullscreen></iframe>
+</body>
+</html>
